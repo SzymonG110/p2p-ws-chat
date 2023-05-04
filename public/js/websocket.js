@@ -1,6 +1,6 @@
 window.onload = function () {
 
-    const ws = window.location.protocol.includes('https') ? new WebSocket(`wss://${window.location.hostname}`) : new WebSocket(`ws://${window.location.hostname}:3000`)
+    const ws = window.location.protocol.includes('https') ? new WebSocket(`wss://${window.location.hostname}`) : new WebSocket(`ws://${window.location.hostname}:8012`)
 
     // ws.onopen = () => {
     //     console.log('Connected to WebSocket server')

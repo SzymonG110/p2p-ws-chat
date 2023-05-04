@@ -25,9 +25,6 @@ class Index {
         this.app.use((req: Request, res: Response) => {
             res.redirect('/')
         })
-
-        this.ws.on('connection', (ws: IndexWebSocket) => {
-        })
     }
 
     setup(): void {
