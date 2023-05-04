@@ -1,0 +1,15 @@
+doctype html
+html(lang="pl-PL")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title .rand(chat)
+        script(src="/js/websocket.js")
+
+    body
+        hr
+        #chat
+        hr
+        form#message-form
+            input#message(type="text", placeholder="Wiadomość")
+            button Send
