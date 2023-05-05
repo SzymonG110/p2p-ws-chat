@@ -1,8 +1,8 @@
 import {Request, Response, NextFunction} from 'express'
-import {IndexWebSocket} from '../websocket/Index.WebSocket'
+import {IndexWebSocket} from '../WebSocket/Index.WebSocket'
 
 export default interface Route {
-    path: string
+    name: string
     disabled: boolean
     methods: Method[]
 }

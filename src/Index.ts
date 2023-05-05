@@ -1,6 +1,6 @@
 import express, {Express, Request, Response} from 'express'
-import wss, {IndexWebSocket} from './websocket/Index.WebSocket'
-import * as process from "process";
+import wss, {IndexWebSocket} from './WebSocket/Index.WebSocket'
+import RouteHandler from './RouteHandler'
 
 require('dotenv').config()
 
@@ -11,6 +11,7 @@ class Index {
 
     constructor() {
         this.init()
+        new RouteHandler(this.app)
         this.hanler404()
         this.setup()
     }
@@ -22,9 +23,9 @@ class Index {
     }
 
     hanler404(): void {
-        this.app.use((req: Request, res: Response) => {
-            res.redirect('/')
-        })
+        // this.app.use((req: Request, res: Response) => {
+        //     res.redirect('/')
+        // })
     }
 
     setup(): void {

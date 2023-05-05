@@ -1,7 +1,7 @@
-import Route, {MethodArgs, MethodReturn} from '../types/Route.type'
+import Route, {MethodArgs, MethodReturn} from '../Types/Route.type'
 
 export default {
-    path: '',
+    name: '',
     methods: [
         {
             method: 'get',

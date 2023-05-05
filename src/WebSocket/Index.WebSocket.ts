@@ -13,7 +13,8 @@ export class IndexWebSocket extends WebSocketServer {
 
         send({m: 'Connected to server'})
 
-        send({m: 'Waiting for a partner to join'})
+        ws.on('message', (message: string) => {})
+
     }
 
     private onClose(): void {
