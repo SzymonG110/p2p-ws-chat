@@ -1,4 +1,4 @@
-import Route, {MethodArgs, Method, MethodReturn} from 'Types/Route.type'
+import Route, {Method, MethodReturn} from 'Types/Route.type'
 import {readdirSync} from 'fs'
 import {Express, NextFunction, Request, Response, Router} from 'express'
 import wss from './WebSocket/Index.WebSocket'
@@ -14,7 +14,7 @@ export default class RouteHandler {
         this.handle()
     }
 
-    public async handle(): Promise<void> {
+    public handle(): void {
         readdirSync(`${__dirname}/Routes`).forEach((routePath) => {
             const router: Router = Router()
 

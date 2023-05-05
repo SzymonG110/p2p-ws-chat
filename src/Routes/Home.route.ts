@@ -7,9 +7,14 @@ export default {
             method: 'get',
             description: 'Home page',
 
-            async run({req}: MethodArgs): Promise<MethodReturn> {
+            async run({}: MethodArgs): Promise<MethodReturn> {
                 return {
-                    render: {name: 'home'}
+                    render: {
+                        name: 'home',
+                        data: {
+                            online: 123
+                        }
+                    }
                 }
             }
         }

@@ -4,15 +4,14 @@ import RouteHandler from './RouteHandler'
 
 require('dotenv').config()
 
-
 class Index {
     app: Express = express()
-    ws: IndexWebSocket = wss
+    wss: IndexWebSocket = wss
 
     constructor() {
         this.init()
         new RouteHandler(this.app)
-        this.hanler404()
+        this.handler404()
         this.setup()
     }
 
@@ -22,10 +21,10 @@ class Index {
         this.app.set('views', `${__dirname}/../views`)
     }
 
-    hanler404(): void {
-        // this.app.use((req: Request, res: Response) => {
-        //     res.redirect('/')
-        // })
+    handler404(): void {
+        this.app.use((req: Request, res: Response) => {
+            res.redirect('/')
+        })
     }
 
     setup(): void {
@@ -34,8 +33,8 @@ class Index {
         })
 
         server.on('upgrade', (request, socket, head) => {
-            wss.handleUpgrade(request, socket, head, socket => {
-                wss.emit('connection', socket, request)
+            this.wss.handleUpgrade(request, socket, head, socket => {
+                this.wss.emit('connection', socket, request)
             })
         })
     }

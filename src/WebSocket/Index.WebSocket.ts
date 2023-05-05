@@ -1,4 +1,6 @@
-import {WebSocketServer, ServerOptions, WebSocket} from 'ws'
+import {ServerOptions, WebSocket, WebSocketServer} from 'ws'
+import HandlerWebSocket from "./Handler.WebSocket";
+import JSONUtil from '../Utils/JSON.util'
 
 export class IndexWebSocket extends WebSocketServer {
     constructor(options: ServerOptions) {
@@ -13,7 +15,12 @@ export class IndexWebSocket extends WebSocketServer {
 
         send({m: 'Connected to server'})
 
-        ws.on('message', (message: string) => {})
+        ws.on('message', (message: string) => {
+            const parsedMessage = new JSONUtil().parse(message)
+            if (!parsedMessage)
+                return send({m: 'Invalid provided data', a: 'error'})
+            new HandlerWebSocket(parsedMessage, ws, send)
+        })
 
     }
 
