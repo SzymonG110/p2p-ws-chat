@@ -51,6 +51,17 @@ export default class HandlerWebSocket {
                 rooms.set(roomId, [this.ws, partner])
                 this.send({m: 'Room created, partner found', roomId: roomId, a: 'room:joined'})
                 partner.send(JSON.stringify({m: 'Room created, partner found', roomId: roomId, a: 'room:joined'}))
+
+                this.ws.on('close', () => {
+                    rooms.delete(roomId)
+                    partner.send(JSON.stringify({m: 'Partner disconnected', a: 'room:partner_disconnected'}))
+                    partner.close()
+                })
+                partner.on('close', () => {
+                    rooms.delete(roomId)
+                    this.ws.send(JSON.stringify({m: 'Partner disconnected', a: 'room:partner_disconnected'}))
+                    this.ws.close()
+                })
             }
         }, 500)
     }
