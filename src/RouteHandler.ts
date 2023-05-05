@@ -1,7 +1,6 @@
 import Route, {Method, MethodReturn} from 'Types/Route.type'
 import {readdirSync} from 'fs'
 import {Express, NextFunction, Request, Response, Router} from 'express'
-import wss from './WebSocket/Index.WebSocket'
 
 export default class RouteHandler {
     table: (Omit<Route, 'run' | 'methods' | 'disabled'> & {
@@ -49,7 +48,7 @@ export default class RouteHandler {
         })
 
         router[method.method](routePath, async (req: Request, res: Response, next: NextFunction) => {
-            const result: MethodReturn = await method.run({req, res, next, wss})
+            const result: MethodReturn = await method.run({req, res, next})
 
             if (result.error)
                 return res.status(result.error.code).json(result.error)

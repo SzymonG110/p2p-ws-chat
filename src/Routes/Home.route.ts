@@ -1,4 +1,5 @@
 import Route, {MethodArgs, MethodReturn} from '../Types/Route.type'
+import wss from '../WebSocket/Index.WebSocket'
 
 export default {
     name: '',
@@ -12,7 +13,7 @@ export default {
                     render: {
                         name: 'home',
                         data: {
-                            online: 123
+                            online: wss.clients.size
                         }
                     }
                 }

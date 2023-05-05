@@ -1,6 +1,7 @@
 import express, {Express, Request, Response} from 'express'
 import wss, {IndexWebSocket} from './WebSocket/Index.WebSocket'
 import RouteHandler from './RouteHandler'
+import IndexDatabase from './Database/Index.database'
 
 require('dotenv').config()
 
@@ -9,6 +10,8 @@ class Index {
     wss: IndexWebSocket = wss
 
     constructor() {
+        new IndexDatabase()
+
         this.init()
         new RouteHandler(this.app)
         this.handler404()

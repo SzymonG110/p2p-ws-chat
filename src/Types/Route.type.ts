@@ -1,5 +1,4 @@
-import {Request, Response, NextFunction} from 'express'
-import {IndexWebSocket} from '../WebSocket/Index.WebSocket'
+import {NextFunction, Request, Response} from 'express'
 
 export default interface Route {
     name: string
@@ -11,7 +10,6 @@ export interface MethodArgs {
     req: Request
     res: Response
     next: NextFunction
-    wss: IndexWebSocket
 }
 
 export interface MethodReturn {

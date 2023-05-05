@@ -21,9 +21,6 @@ export default class HandlerWebSocket {
                 this.roomSend()
                 break;
 
-            case 'room:leave':
-                break;
-
             default:
                 this.send({m: `Invalid action: ${this.message.a}`, a: 'error'})
                 break;
@@ -43,20 +40,25 @@ export default class HandlerWebSocket {
             if (queue.length < 2) return
             const partner = queue.filter(ws => ws !== this.ws)[0]
             if (partner) {
+                const roomId = 1
+
+                if (this.ws.readyState !== WebSocket.OPEN || partner.readyState !== WebSocket.OPEN) return
+                clearInterval(findPartner)
                 queue.splice(queue.indexOf(this.ws), 1)
                 queue.splice(queue.indexOf(partner), 1)
-
-                clearInterval(findPartner)
-                const roomId = 1
                 rooms.set(roomId, [this.ws, partner])
+
+                const sendPartner = (data: object) => partner.send(JSON.stringify(data))
+
                 this.send({m: 'Room created, partner found', roomId: roomId, a: 'room:joined'})
-                partner.send(JSON.stringify({m: 'Room created, partner found', roomId: roomId, a: 'room:joined'}))
+                sendPartner({m: 'Room created, partner found', roomId: roomId, a: 'room:joined'})
 
                 this.ws.on('close', () => {
                     rooms.delete(roomId)
-                    partner.send(JSON.stringify({m: 'Partner disconnected', a: 'room:partner_disconnected'}))
+                    sendPartner({m: 'Partner disconnected', a: 'room:partner_disconnected'})
                     partner.close()
                 })
+
                 partner.on('close', () => {
                     rooms.delete(roomId)
                     this.ws.send(JSON.stringify({m: 'Partner disconnected', a: 'room:partner_disconnected'}))
