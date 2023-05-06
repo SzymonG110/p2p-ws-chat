@@ -1,13 +1,13 @@
 import {WebSocket} from 'ws'
 import {IncomingMessage} from 'http'
 
-interface Room {
+interface Partner {
     WebSocket: WebSocket
     req: IncomingMessage
 }
 
-const queue: Room[] = []
-const rooms: Map<number, Room[]> = new Map()
+const queue: Partner[] = []
+const rooms: Map<number, Partner[]> = new Map()
 
 export {queue}
 export default rooms

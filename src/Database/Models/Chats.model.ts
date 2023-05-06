@@ -29,6 +29,10 @@ export const Chats = model<Chat>('Chats', new Schema<Chat>({
                 message: {
                     type: String,
                     required: true
+                },
+                date: {
+                    type: Date,
+                    required: true
                 }
             }
         ],

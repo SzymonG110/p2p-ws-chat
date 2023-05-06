@@ -10,24 +10,6 @@ export default class HandlerWebSocket {
         this.handle()
     }
 
-    roomSend(): void {
-        const roomId = this.message.roomId
-        const room = rooms.get(roomId)
-        if (!
-            room
-        )
-            return this.send({m: 'Room not found', a: 'error'})
-
-        const partner = room.find(ws => ws.WebSocket !== this.ws)
-        if (!partner) {
-            this.send({m: 'Partner not found', a: 'error'})
-            rooms.delete(roomId)
-            return
-        }
-
-        partner.WebSocket.send(JSON.stringify({m: this.message.m, a: 'room:received'}))
-    }
-
     private handle(): void {
         switch (this.message.a) {
             case 'ping':
@@ -67,17 +49,14 @@ export default class HandlerWebSocket {
                 clearInterval(findPartner)
                 queue.splice(queue.findIndex(ws => ws.WebSocket === this.ws), 1)
                 queue.splice(queue.indexOf(partner), 1)
-                rooms.set(roomId,
-                    [{WebSocket: this.ws, req: this.req}, {WebSocket: partner.WebSocket, req: partner.req}]
-                )
+                rooms.set(roomId, [{WebSocket: this.ws, req: this.req}, {
+                    WebSocket: partner.WebSocket, req: partner.req
+                }])
 
                 const userIp: string = this.req.headers['x-forwarded-for'] as string || '127.0.0.1'
                 const partnerIp: string = partner.req.headers['x-forwarded-for'] as string || '127.0.0.1'
                 Chats.create({
-                    id: roomId,
-                    connectionDate: new Date(),
-                    user1: userIp,
-                    user2: partnerIp
+                    id: roomId, connectionDate: new Date(), user1: userIp, user2: partnerIp
                 })
 
                 const sendPartner = (data: object) => partner.WebSocket.send(JSON.stringify(data))
@@ -93,10 +72,35 @@ export default class HandlerWebSocket {
 
                 partner.WebSocket.on('close', () => {
                     rooms.delete(roomId)
-                    this.ws.send(JSON.stringify({m: 'Partner disconnected', a: 'room:partner_disconnected'}))
+                    this.send({m: 'Partner disconnected', a: 'room:partner_disconnected'})
                     this.ws.close()
                 })
             }
         }, 500)
+    }
+
+    async roomSend(): Promise<void> {
+        const roomId = this.message.roomId
+        const room = rooms.get(roomId)
+        if (!room) return this.send({m: 'Room not found', a: 'error'})
+
+        const partner = room.find(ws => ws.WebSocket !== this.ws)
+        if (!partner) {
+            this.send({m: 'Partner not found', a: 'error'})
+            rooms.delete(roomId)
+            return
+        }
+
+        await Chats.findOneAndUpdate({id: roomId}, {
+            $push: {
+                messages: {
+                    user: this.req.headers['x-forwarded-for'] as string || '127.0.0.1',
+                    message: this.message.m, date: new Date()
+                }
+            }
+        }).exec()
+
+        this.send({m: this.message.m, a: 'room:sent'})
+        partner.WebSocket.send(JSON.stringify({m: this.message.m, a: 'room:received'}))
     }
 }

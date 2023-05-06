@@ -13,13 +13,13 @@ window.onload = () => {
         ws = window.location.protocol.includes('https') ? new WebSocket(`wss://${window.location.hostname}`) : new WebSocket(`ws://${window.location.hostname}:8003`)
 
         ws.onopen = () => {
-            console.log('Connected to WebSocket server')
+            // console.log('Connected to WebSocket server')
             ws.send(JSON.stringify({a: 'room:join'}))
         }
 
         ws.onmessage = (event) => {
             const response = JSON.parse(event.data)
-            console.log(`Received message: ${response.m}`)
+            // console.log(`Received message: ${response.m}`)
 
             if (response.a === 'room:joined') {
                 roomId = response.roomId
@@ -28,23 +28,26 @@ window.onload = () => {
 
             } else if (response.a === 'room:received') chat.innerHTML += `<p>Rozmówca: ${response.m}</p>`
 
-            else if (response.a === 'room:sent') chat.innerHTML += `<p>Ty: ${input.value}</p>`
+            else if (response.a === 'room:sent') chat.innerHTML += `<p>Ty: ${response.m}</p>`
 
             else if (response.a === 'room:partner_disconnected') {
+                roomId = undefined
+
                 chat.innerHTML += `<p>Rozmówca rozłączył się!</p>`
                 document.getElementById('disconnect').style.setProperty('display', 'none')
                 document.getElementById('connect').style.setProperty('display', 'block')
             }
         }
 
-        ws.onclose = () => console.log('WebSocket connection closed')
+        // ws.onclose = () => console.log('WebSocket connection closed')
     })
 
     document.getElementById('disconnect').addEventListener('click', () => {
         if (ws) {
+            ws.close()
+            roomId = undefined
             document.getElementById('disconnect').style.setProperty('display', 'none')
             document.getElementById('connect').style.setProperty('display', 'block')
-            ws.close()
 
             if (chat.innerHTML.includes("Łączenie...")) chat.innerHTML = `<p>Rozłączono!</p>`
             else chat.innerHTML += `<p>Rozłączyłeś się!</p>`
@@ -53,8 +56,8 @@ window.onload = () => {
 
     document.getElementById('message-form').addEventListener('submit', (e) => {
         e.preventDefault()
-        if (!ws || ws.readyState !== WebSocket.OPEN) return
-        console.log(`Sending message: ${input.value}`)
+        if (!ws || ws.readyState !== WebSocket.OPEN || !roomId) return
+        // console.log(`Sending message: ${input.value}`)
         ws.send(JSON.stringify({a: 'room:send', m: input.value, roomId}))
         input.value = ''
     })
