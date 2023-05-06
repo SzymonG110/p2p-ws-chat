@@ -11,6 +11,8 @@ export default class HandlerWebSocket {
     }
 
     private handle(): void {
+        if (this.message.m) this.message.m = this.message.m.trim()
+
         switch (this.message.a) {
             case 'ping':
                 this.send({m: 'Pong', a: 'ping'})
@@ -25,7 +27,7 @@ export default class HandlerWebSocket {
                 break;
 
             default:
-                this.send({m: `Invalid action: ${this.message.a}`, a: 'error'})
+                this.send({m: `Invalid action: ${this.message.a}`, a: 'error:invalid_action'})
                 break;
         }
     }
@@ -82,14 +84,24 @@ export default class HandlerWebSocket {
     async roomSend(): Promise<void> {
         const roomId = this.message.roomId
         const room = rooms.get(roomId)
-        if (!room) return this.send({m: 'Room not found', a: 'error'})
+        if (!room) return this.send({m: 'Room not found', a: 'error:room_not_found'})
 
         const partner = room.find(ws => ws.WebSocket !== this.ws)
         if (!partner) {
-            this.send({m: 'Partner not found', a: 'error'})
+            this.send({m: 'Partner not found', a: 'error:partner_not_found'})
             rooms.delete(roomId)
             return
         }
+
+        if (room.findIndex(ws => ws.WebSocket === this.ws) === -1)
+            return this.send({m: 'You are not in this room', a: 'error:room_not_found'})
+
+        if (!this.message.m) return this.send({m: 'Message is empty', a: 'error:empty_message'})
+
+        if (this.message.m.length > 5000) return this.send({
+            m: 'Message is too long (max 5000 chars)',
+            a: 'error:long_message'
+        })
 
         await Chats.findOneAndUpdate({id: roomId}, {
             $push: {

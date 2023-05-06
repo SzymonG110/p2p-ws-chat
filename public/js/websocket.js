@@ -57,8 +57,10 @@ window.onload = () => {
     document.getElementById('message-form').addEventListener('submit', (e) => {
         e.preventDefault()
         if (!ws || ws.readyState !== WebSocket.OPEN || !roomId) return
+        if (input.value.trim() === '') return
+        if (input.value.trim().length > 5000) return alert('Wiadomość nie może być dłuższa niż 5000 znaków!')
         // console.log(`Sending message: ${input.value}`)
-        ws.send(JSON.stringify({a: 'room:send', m: input.value, roomId}))
+        ws.send(JSON.stringify({a: 'room:send', m: input.value.trim(), roomId}))
         input.value = ''
     })
 }
