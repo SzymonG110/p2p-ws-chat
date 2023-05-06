@@ -48,7 +48,7 @@ wss.on('connection', (ws: WebSocket) => {
     })
 
     const interval = setInterval(() => {
-        let peer = findWaitingUser()
+        const peer = findWaitingUser()
 
         if (peer && peer.user.id !== user.id) {
             waitingUsers.splice(peer.index, 1)

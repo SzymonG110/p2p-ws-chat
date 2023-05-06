@@ -1,7 +1,12 @@
 import {model, Schema} from 'mongoose'
 import Chat from '../../Types/Database/Chat.type'
 
-export const Chats = model<Chat>('Chats', new Schema({
+export const Chats = model<Chat>('Chats', new Schema<Chat>({
+    id: {
+        type: Number,
+        required: true,
+        unique: true
+    },
     user1: {
         type: String,
         required: true

@@ -10,7 +10,7 @@ window.onload = () => {
         document.getElementById('connect').style.setProperty('display', 'none')
         document.getElementById('disconnect').style.setProperty('display', 'block')
 
-        ws = window.location.protocol.includes('https') ? new WebSocket(`wss://${window.location.hostname}`) : new WebSocket(`ws://${window.location.hostname}:8012`)
+        ws = window.location.protocol.includes('https') ? new WebSocket(`wss://${window.location.hostname}`) : new WebSocket(`ws://${window.location.hostname}:8003`)
 
         ws.onopen = () => {
             console.log('Connected to WebSocket server')
@@ -46,7 +46,7 @@ window.onload = () => {
             document.getElementById('connect').style.setProperty('display', 'block')
             ws.close()
 
-            if (chat.innerHTML.includes("Łączenie...")) hat.innerHTML = `<p>Rozłączono!</p>`
+            if (chat.innerHTML.includes("Łączenie...")) chat.innerHTML = `<p>Rozłączono!</p>`
             else chat.innerHTML += `<p>Rozłączyłeś się!</p>`
         }
     })

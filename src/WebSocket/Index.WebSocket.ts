@@ -1,4 +1,5 @@
 import {ServerOptions, WebSocket, WebSocketServer} from 'ws'
+import {IncomingMessage} from 'http'
 import HandlerWebSocket from "./Handler.WebSocket";
 import JSONUtil from '../Utils/JSON.util'
 
@@ -6,11 +7,13 @@ export class IndexWebSocket extends WebSocketServer {
     constructor(options: ServerOptions) {
         super(options)
 
-        this.on('connection', (ws: WebSocket) => this.onConnection(ws))
+        this.on('connection', (ws: WebSocket, req: IncomingMessage) => {
+            this.onConnection(ws, req)
+        })
         this.on('close', () => this.onClose())
     }
 
-    private onConnection(ws: WebSocket): void {
+    private onConnection(ws: WebSocket, req: IncomingMessage): void {
         const send = (data: object) => ws.send(JSON.stringify(data))
 
         send({m: 'Connected to server'})
@@ -19,7 +22,7 @@ export class IndexWebSocket extends WebSocketServer {
             const parsedMessage = new JSONUtil().parse(message)
             if (!parsedMessage)
                 return send({m: 'Invalid provided data', a: 'error'})
-            new HandlerWebSocket(parsedMessage, ws, send)
+            new HandlerWebSocket(parsedMessage, ws, req, send)
         })
 
     }
