@@ -1,4 +1,53 @@
-#navbar {
-    background: aqua;
-    height: 1;
+@import 'variables';
+
+.navbar {
+    width: 100%;
+    height: 6vh;
+    color: $white;
+
+    .container {
+        height: 100%;
+        padding: 10px 35px;
+
+        .leftNavbar {
+            display: flex;
+            float: left;
+            align-items: center;
+            width: 50%;
+            height: 100%;
+        }
+
+        .rightNavbar {
+            display: flex;
+            float: right;
+            align-items: center;
+            justify-content: flex-end;
+            width: 50%;
+            height: 100%;
+        }
+
+        .logo {
+            display: block;
+
+            .text {
+                font-size: 1.5rem;
+                font-weight: 700;
+                letter-spacing: 2px;
+            }
+
+            .online {
+                letter-spacing: 2px;
+            }
+        }
+
+        a {
+            font-size: 1.3rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: $white;
+            background: $discord;
+            padding: 5px 20px;
+            border-radius: 30px;
+        }
+    }
 }

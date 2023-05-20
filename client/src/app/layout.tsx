@@ -1,21 +1,27 @@
 import '@/styles/globals.scss'
-import {Inter,} from 'next/font/google'
+import {Montserrat} from 'next/font/google'
+import {Metadata} from 'next'
 
-const inter = Inter({subsets: ['latin']})
+const montserrat = Montserrat({subsets: ['latin']})
 
-export const metadata = {
+export const metadata: Metadata = {
     title: 'XChat',
-    description: 'Chat created by SzymonG110#8841',
+    description: 'Rozmawiaj online z losowymi ludźmi',
+    authors: [
+        {
+            name: 'SzymonG110',
+            url: 'https://szymon.ml/'
+        }
+    ],
+    viewport: 'width=device-width, initial-scale=1.0'
 }
 
-export default function RootLayout({
-                                       children,
-                                   }: {
-    children: React.ReactNode
-}) {
+export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
-        <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <html lang="pl-PL">
+        <body className={montserrat.className}>
+        {children}
+        </body>
         </html>
     )
 }

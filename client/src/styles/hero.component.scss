@@ -1,0 +1,19 @@
+@import 'variables';
+
+.left {
+    display: flex;
+    float: left;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 93vh;
+}
+
+.right {
+    display: flex;
+    float: right;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    height: 93vh;
+}
